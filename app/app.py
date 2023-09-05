@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import os
 
-# Reference this file
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://bterral:1234@db/to_do'
 db = SQLAlchemy(app)
 
 class Todo(db.Model):
@@ -57,8 +57,15 @@ def update(id):
 			return 'There was an issue during task update'
 	else:
 		return render_template('update.html', task=task_to_update)
-
+	
+def init_db():
+    # Check if the database file exists
+        # The database file doesn't exist, so create the tables
+    with app.app_context():
+        db.create_all()
+        print("Database tables created.")
 
 if __name__ == "__main__":
+	init_db()
 	app.run(host='0.0.0.0', debug=True)
 
